@@ -20,7 +20,7 @@ class Task(models.Model):
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6,choices=selectPriority,default=Low)
     difficulty = models.CharField(max_length=12,choices=selectDifficulty,default=Easy)
-    publishDate = models.DateTimeField('date time published')
+    publishDate = models.DateTimeField('date time published', auto_now_add=True)
     column = models.ForeignKey(Column, related_name="column", on_delete=models.CASCADE)
 
     def __str__(self):
