@@ -8,6 +8,6 @@ check the manual that corresponds to your MySQL server version for the right syn
 ---<b>Wykonaj downgrade Django do wersji 2.0</b>:
 <p><i>pip install Django==2.0.0 -i https://pypi.douban.com/simple</i></p> 
 
----<b>W pliku</b> <i>billenium_project/_init_.py</i> <b>zawrzyj formułę: </b>
+---<b>W pliku</b> <i>billenium_project/&lowbar&lowbarinit_.py&lowbar&lowbar</i> <b>zawrzyj formułę: </b>
 <p><i>import pymysql
   <br>pymysql.install_as_MySQLdb()</i></p>
