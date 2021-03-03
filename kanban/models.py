@@ -14,8 +14,8 @@ class Task(models.Model):
     Easy = "Easy"
     Intermediate = "Intermediate"
     Hard = "Hard"
-    title = models.CharField(max_length=200)
-    description = models.CharField(max_length=200)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6,choices=selectPriority,default=Low)
@@ -25,4 +25,8 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ('priority',)
+        
 # Create your models here.
