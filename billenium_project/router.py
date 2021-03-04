@@ -3,5 +3,5 @@ from kanban.views import *
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('Task', TaskViewSet)
-router.register('Column', ColumnViewSet)
+router.register('Tasks', TasksViewSet)
+router.register('Columns', ColumnsViewSet)

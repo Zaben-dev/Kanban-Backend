@@ -15,22 +15,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-class TaskListView(ListView):
-    model = Task
+class TasksListView(ListView):
+    model = Tasks
     template_name = 'kanban/kanban_list.html'
 
 
-class TaskDetailView(DetailView):
-    model = Task
+class TasksDetailView(DetailView):
+    model = Tasks
     template_name = 'kanban/kanban_detail.html'
 
 
-class ColumnListView(ListView):
-    model = Column
+class ColumnsListView(ListView):
+    model = Columns
     template_name = 'kanban/kanban_list.html'
 
 
-class ColumnDetailView(DetailView):
-    model = Column
+class ColumnsDetailView(DetailView):
+    model = Columns
     template_name = 'kanban/kanban_detail.html'
 

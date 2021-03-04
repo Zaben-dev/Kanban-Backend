@@ -6,19 +6,20 @@ from rest_framework.decorators import action
 from django_filters  import rest_framework as filters
 from rest_framework.permissions import IsAuthenticated
 
-class TaskFilter(filters.FilterSet):
+class TasksFilter(filters.FilterSet):
+    id = filters.CharFilter(lookup_expr='icontains')
     title = filters.CharFilter(lookup_expr='icontains')
     description = filters.CharFilter(lookup_expr='icontains')
 
     class Meta:
-        model = Task
-        fields = ('title', 'description')
+        model = Tasks
+        fields = ('id','title', 'description')
 
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-    filterset_class = TaskFilter
+class TasksViewSet(viewsets.ModelViewSet):
+    queryset = Tasks.objects.all()
+    serializer_class = TasksSerializer
+    filterset_class = TasksFilter
 
 
     @action(methods=['get'],detail=False)
@@ -27,6 +28,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer_class()(newest)
         return Response(serializer.data)
 
-class ColumnViewSet(viewsets.ModelViewSet):
-    queryset = Column.objects.all()
-    serializer_class = ColumnSerializer
+class ColumnsViewSet(viewsets.ModelViewSet):
+    queryset = Columns.objects.all()
+    serializer_class = ColumnsSerializer

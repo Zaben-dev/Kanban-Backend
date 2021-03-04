@@ -4,9 +4,9 @@ from . import views
 
 app_name = 'kanban'
 urlpatterns = [
-    path('', views.TaskListView.as_view(), name='list'),
-    path('<int:pk>/', views.TaskDetailView.as_view(), name='detail'),
-    path('', views.ColumnListView.as_view(), name='list'),
-    path('<int:pk>/', views.ColumnDetailView.as_view(), name='detail'),
+    path('', views.TasksListView.as_view(), name='list'),
+    path('<int:pk>/', views.TasksDetailView.as_view(), name='detail'),
+    path('', views.ColumnsListView.as_view(), name='list'),
+    path('<int:pk>/', views.ColumnsDetailView.as_view(), name='detail'),
 
 ]

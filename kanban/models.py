@@ -1,19 +1,21 @@
 from django.db import models
 
-class Column(models.Model):
+class Columns(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
-    limit = models.IntegerField()
+    limit = models.IntegerField(default=999)
 
     def __str__(self):
         return self.name
 
-class Task(models.Model):
+class Tasks(models.Model):
     Low = "Low"
     Medium = "Medium"
     High = "High"
     Easy = "Easy"
     Intermediate = "Intermediate"
     Hard = "Hard"
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
@@ -21,7 +23,7 @@ class Task(models.Model):
     priority = models.CharField(max_length=6,choices=selectPriority,default=Low)
     difficulty = models.CharField(max_length=12,choices=selectDifficulty,default=Easy)
     publishDate = models.DateTimeField('date time published', auto_now_add=True)
-    column = models.ForeignKey(Column, related_name="column", on_delete=models.CASCADE)
+    column = models.ForeignKey(Columns, related_name="column", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
