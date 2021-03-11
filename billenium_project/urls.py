@@ -22,8 +22,7 @@ from django.conf.urls import url
 from kanban import views as kanban_views
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('kanban/', include('kanban.urls', namespace='kanban')),
-    path('api/', include(router.urls)),
-
 ]

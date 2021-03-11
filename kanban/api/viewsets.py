@@ -21,7 +21,6 @@ class TasksViewSet(viewsets.ModelViewSet):
     serializer_class = TasksSerializer
     filterset_class = TasksFilter
 
-
     @action(methods=['get'],detail=False)
     def newest(self, request):
         newest = self.get_queryset().order_by('title').last()
@@ -31,3 +30,5 @@ class TasksViewSet(viewsets.ModelViewSet):
 class ColumnsViewSet(viewsets.ModelViewSet):
     queryset = Columns.objects.all()
     serializer_class = ColumnsSerializer
+
+
