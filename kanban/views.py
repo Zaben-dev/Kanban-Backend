@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
+
 class TasksListView(ListView):
     model = Tasks
     template_name = 'kanban/kanban_list.html'
