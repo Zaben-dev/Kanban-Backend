@@ -6,14 +6,14 @@ from django.http.response import HttpResponseForbidden
 def validate_column_limit(value):
     model = value
     c = Columns.objects.get(id=model.id)
-    if (Tasks.objects.filter(column=value).count() > c.limit):
+    if ((c.limit is not None) and (Tasks.objects.filter(column=value).count() > c.limit)):
         raise ValidationError(
             "Can only create %s tasks in column '%s'." % (c.limit, c.name))
 
 class Columns(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
-    limit = models.IntegerField(default=999)
+    limit = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name
