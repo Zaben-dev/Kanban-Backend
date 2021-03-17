@@ -18,5 +18,5 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
 
         def get_column_id(self, obj):
             obj.column_id = Columns.objects.get(id=self.model.column.id)
-            id = obj.column_id.id
-            return id
+            col_id = obj.column_id.id
+            return col_id

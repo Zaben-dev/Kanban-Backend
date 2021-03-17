@@ -16,10 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .router import router
-# from rest_framework.authtoken import views
-# from django.contrib.auth.views import LoginView,LogoutView
-# from django.conf.urls import url
-# from kanban import views as kanban_views
+
 
 urlpatterns = [
     path('', include(router.urls)),
