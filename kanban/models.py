@@ -9,17 +9,6 @@ def validate_column_limit(value):
         raise ValidationError(
             "Can only create %s tasks in column '%s'." % (c.limit, c.name))
 
-def ids():
-    max = Tasks.objects.all().aggregate(largest=models.Max('position'))['largest']
-    min = Tasks.objects.all().aggregate(smallest=models.Min('position'))['smallest']
-
-    if min == None:
-        return 1  
-    if max == None:
-        return 1 
-    else: 
-        return max+1
-
 class Columns(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
@@ -46,26 +35,26 @@ class Tasks(models.Model):
     publish_date = models.DateTimeField('date time published', auto_now_add=True)
     column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT,
                                validators=[validate_column_limit],)
-    position = models.IntegerField(('Code'),default=ids,unique=False,editable=True)
+    position = models.IntegerField(('Code'),default=1,unique=False,editable=True)
 
     def delete(self):
         super(Tasks, self).delete()
-        min = Tasks.objects.all().aggregate(smallest=models.Min('position'))['smallest']
+        min = Tasks.objects.filter(column=self.column).aggregate(smallest=models.Min('position'))['smallest']
         if min != 1:
             with transaction.atomic():
-                for task in Tasks.objects.filter(position=min):
+                for task in Tasks.objects.filter(column=self.column,position=min):
                     min = 1
                     task.position = min
                     task.save()
-        count = Tasks.objects.all().count()
+        count = Tasks.objects.filter(column=self.column).count()
         tab = []
         if min == 1:
             for i in range(count):
-                tab.append(Tasks.objects.filter()[i:i+1].first())
+                tab.append(Tasks.objects.filter(column=self.column)[i:i+1].first())
             for j in range (len(tab)-1):
                 if(tab[j+1].position-tab[j].position != 1):
                     with transaction.atomic():
-                        for task in Tasks.objects.filter(position=tab[j+1].position):
+                        for task in Tasks.objects.filter(column=self.column,position=tab[j+1].position):
                             task.position = 1+tab[j].position
                             task.save()
                             tab[j+1].position = 1+tab[j].position
@@ -73,9 +62,9 @@ class Tasks(models.Model):
     def save(self, *args, **kwargs):
         zmiana = True
         while zmiana:
-            if Tasks.objects.filter(position=self.position).exists():
+            if Tasks.objects.filter(column=self.column,position=self.position).exists():
                 with transaction.atomic():
-                    for task in Tasks.objects.filter(position=self.position):
+                    for task in Tasks.objects.filter(column=self.column,position=self.position):
                         task.position = task.position+1
                         task.save()
                         zmiana=True
@@ -87,4 +76,4 @@ class Tasks(models.Model):
         return self.title
 
     class Meta:
-        ordering = ('position',)
+        ordering = ('column_id','position',)
