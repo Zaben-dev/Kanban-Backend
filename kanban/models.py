@@ -34,7 +34,7 @@ class Tasks(models.Model):
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
     publish_date = models.DateTimeField('date time published', auto_now_add=True)
     column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT,
-                               validators=[validate_column_limit],)
+                               validators=[validate_column_limit],editable=False)
     position = models.IntegerField(('Code'),default=1,unique=False,editable=True)
 
     def delete(self):
