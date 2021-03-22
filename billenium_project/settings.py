@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'billenium_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kanban',
+        'NAME': 'kankanv2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

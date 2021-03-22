@@ -1,14 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.db import transaction
-
-
-def validate_column_limit(value):
-    model = value
-    c = Columns.objects.get(id=model.id)
-    if c.limit is not None and Tasks.objects.filter(column=value).count() >= c.limit:
-        raise ValidationError(
-            "Can only create %s tasks in column '%s'." % (c.limit, c.name))
 
 
 class Columns(models.Model):
@@ -35,8 +26,7 @@ class Tasks(models.Model):
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
     publishDate = models.DateTimeField('date time published', auto_now_add=True)
-    column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT,
-                               validators=[validate_column_limit], editable=False)
+    column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
     position = models.IntegerField('Code', default=1, unique=False, editable=True)
 
     def delete(self):
