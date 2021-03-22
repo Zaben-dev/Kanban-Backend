@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'billenium_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sql11396176',
-        'USER': 'sql11396176',
-        'PASSWORD': 'UQBcB9n3Mr',
-        'HOST': 'sql11.freesqldatabase.com',
+        'NAME': 'kanban',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
