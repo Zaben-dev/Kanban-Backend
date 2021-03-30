@@ -6,6 +6,7 @@ def checkPositions(col):
     colList = []
     for i in range(countCols):
         colList.append(Columns.objects.filter()[i:i+1].first())
+
     min = Tasks.objects.filter(column=colList[col]).aggregate(smallest=models.Min('position'))['smallest']
     if min != 1:
         with transaction.atomic():
@@ -25,8 +26,9 @@ def checkPositions(col):
                         task.position = 1+tab[l].position
                         tab[l+1].position = 1+tab[l].position
                         task.save(col=999)
-                        if l == (len(tab)-2):
-                            task.save(col=col+1)
+            if l == (len(tab)-2):
+                for task in Tasks.objects.filter(column=colList[col],position=tab[l+1].position):
+                    task.save(col=col+1)
 
 class Columns(models.Model):
     id = models.AutoField(primary_key=True)
@@ -79,9 +81,13 @@ class Tasks(models.Model):
 
         if col == 1000:
             checkPositions(0)
+            #super().save(**kwargs) 
+            
 
         if col <= countCols:
-            checkPositions(col)               
+            super().save(**kwargs) 
+            checkPositions(col)
+              
 
     def __str__(self):
         return self.title
