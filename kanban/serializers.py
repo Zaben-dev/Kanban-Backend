@@ -22,7 +22,7 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tasks
         fields = ('id', 'title', 'description', 'priority', 'difficulty', 'publishDate', 'column', 'column_id',
-                  'position', 'columnId')
+                  'position','columnId' )
 
         def get_column_id(self, obj):
             obj.column_id = Columns.objects.get(id=self.model.column.id)
