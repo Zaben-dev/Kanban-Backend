@@ -1,12 +1,9 @@
 from rest_framework import serializers
 from .models import Columns, Tasks
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
-def validate_column_limit(value):
-    c = Columns.objects.get(id=value)
-    if c.limit is not None and Tasks.objects.filter(column_id=value).count() >= c.limit:
-        raise ValidationError(
-            "Can only create %s tasks in column '%s'." % (c.limit, c.name))
+
 
 class ColumnsSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -16,6 +13,14 @@ class ColumnsSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TasksSerializer(serializers.HyperlinkedModelSerializer):
+
+    def validate_column_limit(value):
+        if value is not None:
+            c = Columns.objects.get(id=value)
+            if c.limit is not None and Tasks.objects.filter(column_id=value).count() >= c.limit:
+                raise ValidationError(
+                    "Can only create %s tasks in column '%s'." % (c.limit, c.name))
+
     column_id = serializers.IntegerField(required=False, validators=[validate_column_limit])
     columnId = column_id
 
