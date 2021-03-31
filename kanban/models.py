@@ -78,7 +78,7 @@ class Tasks(models.Model):
     Hard = "Hard"
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=70)
-    description = models.TextField(max_length=400)
+    description = models.TextField(max_length=400, blank=True)
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
