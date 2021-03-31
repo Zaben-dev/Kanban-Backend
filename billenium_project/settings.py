@@ -1,3 +1,5 @@
+import django_heroku
+
 """
 Django settings for billenium_project project.
 
@@ -133,3 +135,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+django_heroku.settings(locals())
