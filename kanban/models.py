@@ -60,7 +60,7 @@ def checkPositions(col):
 
 class Columns(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=40)
     limit = models.IntegerField(null=True)
 
     def __str__(self):
@@ -77,8 +77,8 @@ class Tasks(models.Model):
     Intermediate = "Intermediate"
     Hard = "Hard"
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
+    title = models.CharField(max_length=70)
+    description = models.TextField(max_length=400)
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
