@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'aj)3oq7fpg*%21m3l6fd=o*mit^#cx^h4)782p3hq^y)=23e6t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kanban-table-backend.herokuapp.com/', '127.0.0.1']
 
 
 # Application definition
