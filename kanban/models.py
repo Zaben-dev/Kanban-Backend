@@ -69,6 +69,18 @@ class Columns(models.Model):
     class Meta:
         ordering = ['id']
 
+
+class Rows(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['id']
+
+
 class Tasks(models.Model):
     Low = "Low"
     Medium = "Medium"
@@ -86,6 +98,7 @@ class Tasks(models.Model):
     publishDate = models.DateTimeField('date time published', auto_now_add=True)
     column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
     position = models.IntegerField('Code', default=1, unique=False, editable=True)
+    rows = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=True)
 
     def delete(self):
         super(Tasks, self).delete()
@@ -118,3 +131,5 @@ class Tasks(models.Model):
 
     class Meta:
         ordering = ['column_id','position']
+
+

@@ -7,4 +7,6 @@ urlpatterns = [
     path('<int:pk>/', views.TasksDetailView.as_view(), name='detail'),
     path('', views.ColumnsListView.as_view(), name='list'),
     path('<int:pk>/', views.ColumnsDetailView.as_view(), name='detail'),
+    path('', views.RowsListView.as_view(), name='list'),
+    path('<int:pk>/', views.RowsDetailView.as_view(), name='detail'),
 ]

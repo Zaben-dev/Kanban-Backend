@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Columns, Tasks
+from .models import *
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
@@ -27,9 +27,16 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tasks
         fields = ('id', 'title', 'description', 'priority', 'difficulty', 'publishDate', 'column', 'column_id',
-                  'position','columnId' )
+                  'position','columnId', 'rows')
 
         def get_column_id(self, obj):
             obj.column_id = Columns.objects.get(id=self.model.column.id)
             col_id = obj.column_id.id
             return col_id
+
+
+class RowsSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Rows
+        fields = ('id', 'name')
