@@ -21,9 +21,17 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
                 raise ValidationError(
                     "Can only create %s tasks in column '%s'." % (c.limit, c.name))
 
+    cell_id = serializers.IntegerField(required=False)
+    cellId = cell_id
+
     class Meta:
         model = Tasks
-        fields = ('id', 'title', 'description', 'priority', 'difficulty', 'publishDate', 'cell','position')
+        fields = ('id', 'title', 'description', 'priority', 'difficulty', 'publishDate', 'cell','position','cell_id','cellId')
+
+        def get_cell_id(self, obj):
+            obj.cell_id = Cells.objects.get(id=self.model.cell.id)
+            cell_id = obj.cell_id.id
+            return cell_id
 
        
 

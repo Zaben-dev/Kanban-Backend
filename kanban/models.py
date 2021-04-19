@@ -2,59 +2,59 @@ from django.db import models
 from django.db import transaction
 
 
-def checkPositions(col):
-    print('-----col = %s-----'%col)
+def checkPositions(cell):
+    print('-----cell = %s-----'%cell)
 
-    countCols = Columns.objects.filter().count() #Number of columns
-    colList = [] #array of columns
+    countCells = Cells.objects.filter().count() #Number of columns
+    cellList = [] #array of columns
 
-    if col > countCols-1:#If col is < than number of columns - End of function
+    if cell > countCells-1:#If col is < than number of columns - End of function
         return 0
 
-    for i in range(countCols): #Filling the columns array
-        colList.append(Columns.objects.filter()[i:i+1].first()) 
+    for i in range(countCells): #Filling the columns array
+        cellList.append(Cells.objects.filter()[i:i+1].first()) 
 
-    print('-----For column: %s-----'%colList[col])
+    print('-----For column: %s-----'%cellList[cell])
 
-    count = Tasks.objects.filter(column=colList[col]).count()#Number of tasks in current column
+    count = Tasks.objects.filter(cell=cellList[cell]).count()#Number of tasks in current column
     tasList = [] #array of tasks
 
     for j in range(count): 
-        tasList.append(Tasks.objects.filter(column=colList[col])[j:j+1].first()) #Filling the tasks array
+        tasList.append(Tasks.objects.filter(cell=cellList[cell])[j:j+1].first()) #Filling the tasks array
 
-    print('Number of tasks in column %s = %s'%(colList[col],count))
+    print('Number of tasks in cell %s = %s'%(cellList[cell],count))
     
-    min = Tasks.objects.filter(column=colList[col]).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
+    min = Tasks.objects.filter(cell=cellList[cell]).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
 
-    print('Min position in column %s = %s'%(colList[col],min))
+    print('Min position in cell %s = %s'%(cellList[cell],min))
 
     if min is None: #If min is none - Column is empty - Change to the next column (col=col+1)
-        print('Kolumna pusta - Zmieniono kolumne')
-        checkPositions(col+1)
+        print('Komórka pusta - Zmieniono komórke')
+        checkPositions(cell+1)
 
     if len(tasList) == 1: #If number of tasks on column is one - Change to the next column (col=col+1)
-        print('One task in column - Column has been changed')
-        checkPositions(col+1)
+        print('One task in cell - Cell has been changed')
+        checkPositions(cell+1)
     
     if min != 1 and min is not None: #If min exists and min is not 1 - Change minimum to one
         with transaction.atomic():
-            for task in Tasks.objects.filter(column=colList[col], position=min):
+            for task in Tasks.objects.filter(cell=cellList[cell], position=min):
                 min = 1
                 task.position = min
                 print('Minimum value wasn`t `1` - Minimum was changed to `1`')
-                task.save(col=1)
+                task.save(cell=1)
 
     if min == 1: #If min is 1 - Column is not empty - Check positions
         for l in range (len(tasList)-1):
             if(tasList[l+1].position-tasList[l].position != 1):
                 with transaction.atomic():
-                    for task in Tasks.objects.filter(column=colList[col],position=tasList[l+1].position):
+                    for task in Tasks.objects.filter(cell=cellList[cell],position=tasList[l+1].position):
                         task.position = 1+tasList[l].position
                         task.save(col=1)
                         print('Changed position of task (id:%s) from |%s| to |%s|'%(tasList[l+1].id,tasList[l+1].position,1+tasList[l].position))
                         tasList[l+1].position = 1+tasList[l].position 
         print('Column has been changed')
-        checkPositions(col+1)
+        checkPositions(cell+1)
         
 
 
@@ -150,12 +150,12 @@ class Tasks(models.Model):
         
         #col = 1 - Only save task
         #col = -1 - checkPositions(0)
-        countCols = Columns.objects.filter().count()
+        countCells = Cells.objects.filter().count()
         zmiana = True
         while zmiana:
-            if Tasks.objects.filter(column=self.column,position=self.position).exists():
+            if Tasks.objects.filter(cell=self.cell,position=self.position).exists():
                 with transaction.atomic():
-                    for task in Tasks.objects.filter(column=self.column,position=self.position):
+                    for task in Tasks.objects.filter(cell=self.cell,position=self.position):
                         task.position = task.position+1
                         task.save(col=1)
                         zmiana=True
