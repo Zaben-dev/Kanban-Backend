@@ -59,7 +59,7 @@ def checkPositions(col):
 
 
 class Columns(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True,editable=False)
     name = models.CharField(max_length=40)
     limit = models.IntegerField(null=True)
 
@@ -69,6 +69,19 @@ class Columns(models.Model):
     class Meta:
         ordering = ['id']
 
+    def save(self,**kwargs):
+
+        countRows = Rows.objects.filter().count() #Number of columns
+        rowList = [] #array of columns
+
+        for i in range(countRows): #Filling the columns array
+            rowList.append(Rows.objects.filter()[i:i+1].first()) 
+
+        super().save(**kwargs)
+        for i in rowList:
+            c = Cells(None,self.id,i.id)
+            c.save() 
+
 
 class Rows(models.Model):
     id = models.AutoField(primary_key=True)
@@ -76,6 +89,34 @@ class Rows(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['id']
+
+    def save(self,**kwargs):
+
+        countCols = Columns.objects.filter().count() #Number of columns
+        colList = [] #array of columns
+
+        for i in range(countCols): #Filling the columns array
+            colList.append(Columns.objects.filter()[i:i+1].first()) 
+
+        super().save(**kwargs)
+        for i in colList:
+            c = Cells(None,i.id,self.id)
+            c.save() 
+
+
+
+
+
+class Cells(models.Model):
+    id = models.AutoField(primary_key=True,editable=False)
+    column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
+    row = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=False)
+
+    #def __str__(self):
+    #    return self.id
 
     class Meta:
         ordering = ['id']
@@ -96,15 +137,17 @@ class Tasks(models.Model):
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
     publishDate = models.DateTimeField('date time published', auto_now_add=True)
-    column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
-    position = models.IntegerField('Code', default=1, unique=False, editable=True)
-    rows = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=True)
+    #column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
+    cell = models.ForeignKey(Cells, related_name="cell", null=True,on_delete=models.PROTECT, editable=False)
+    position = models.IntegerField('Position', default=1, unique=False, editable=True)
+    #row = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=False)
 
     def delete(self):
         super(Tasks, self).delete()
         checkPositions(0)
 
     def save(self, col=-1, **kwargs):
+        
         #col = 1 - Only save task
         #col = -1 - checkPositions(0)
         countCols = Columns.objects.filter().count()
@@ -130,6 +173,6 @@ class Tasks(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['column_id','position']
+        ordering = ['position']
 
 

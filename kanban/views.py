@@ -30,3 +30,13 @@ class RowsListView(ListView):
 class RowsDetailView(DetailView):
     model = Rows
     template_name = 'kanban/kanban_detail.html'
+
+class CellsListView(ListView):
+    model = Cells
+    template_name = 'kanban/kanban_list.html'
+
+
+class CellsDetailView(DetailView):
+    model = Cells
+    template_name = 'kanban/kanban_detail.html'
+
