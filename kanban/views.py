@@ -1,12 +1,17 @@
 from django.views.generic import ListView, DetailView
+from rest_framework.permissions import IsAuthenticated
+
 from .serializers import *
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import UserSerializer, RegisterSerializer
 from knox.views import LoginView as KnoxLoginView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import login
+from knox.auth import TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.views import APIView
 
 class TasksListView(ListView):
     model = Tasks
@@ -47,6 +52,17 @@ class RowsDetailView(DetailView):
 #     template_name = 'kanban/kanban_detail.html'
 
 # Register API
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-list'
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-detail'
+
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
@@ -60,6 +76,7 @@ class RegisterAPI(generics.GenericAPIView):
         })
 
 class LoginAPI(KnoxLoginView):
+    serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):

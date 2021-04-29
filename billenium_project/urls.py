@@ -18,7 +18,7 @@ from django.urls import path, include
 from .router import router
 from kanban.views import RegisterAPI, LoginAPI
 from knox import views as knox_views
-
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -26,6 +26,5 @@ urlpatterns = [
     path('kanban/', include('kanban.urls', namespace='kanban')),
     path('register/', RegisterAPI.as_view(), name='register'),
     path('login/', LoginAPI.as_view(), name='login'),
-    path('logout/', knox_views.LogoutView.as_view(), name='logout'),
-    path('logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]

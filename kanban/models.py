@@ -1,6 +1,6 @@
 from django.db import models
 from django.db import transaction
-
+from django.contrib.auth.models import User
 
 def checkPositions(col):
     print('-----col = %s-----'%col)
@@ -149,6 +149,8 @@ class Tasks(models.Model):
     #cell = models.ForeignKey(Cells, related_name="cell", null=True,on_delete=models.PROTECT, editable=False)
     position = models.IntegerField('Position', default=1, unique=False, editable=True)
     row = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=False)
+
+    User = models.ManyToManyField('auth.User', related_name='danie', editable=True)
 
     def delete(self):
         super(Tasks, self).delete()

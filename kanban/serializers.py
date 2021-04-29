@@ -1,15 +1,21 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import *
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email')
 
 class ColumnsSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Columns
         fields = ('id', 'name', 'limit')
-
 
 class TasksSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -29,9 +35,18 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
     row_id = serializers.IntegerField(required=False)
     rowId = row_id
 
+    # User = get_user_model()
+    # choices = User.objects.all()
+
+    # user_id = serializers.IntegerField(choices = choices)
+    # userId = user_id
+
+    #ids = serializers.HyperlinkedRelatedField(many=True, queryset=User.objects.all(),view_name='User-list')
+    user = serializers.ReadOnlyField(source='User.username')
+
     class Meta:
         model = Tasks
-        fields = ('id', 'title', 'description', 'priority', 'difficulty',
+        fields = ('id', 'User','user', 'title', 'description', 'priority', 'difficulty',
                   'publishDate', 'position','column', 'column_id', 'columnId','row','row_id','rowId')
 
         def get_column_id(self, obj):
@@ -43,6 +58,11 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
             obj.row_id = Rows.objects.get(id=self.model.row.id)
             row_id = obj.row_id.id
             return row_id
+
+        # def get_user_id(self, obj):
+        #     obj.user_id = User.objects.get(id=self.model.User.id)
+        #     user_id = obj.User_id.id
+        #     return user_id
 
         # def get_cell_id(self, obj):
         #     obj.cell_id = Cells.objects.get(id=self.model.cell.id)
@@ -78,10 +98,7 @@ class RowsSerializer(serializers.HyperlinkedModelSerializer):
 #             return row_id
 
 # User Serializer
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email')
+
 
 # Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
@@ -94,3 +111,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
 
         return user
+
+class LoginSerializer(serializers.Serializer):
+   username = serializers.CharField()
+   password = serializers.CharField()
+
+   def validate(self, data):
+      user = authenticate(**data)
+      if user and user.is_active:
+         return user
+      raise serializers.ValidationError("Incorrect Credentials")
