@@ -14,4 +14,8 @@ check the manual that corresponds to your MySQL server version for the right syn
   
 ---<b>Zainstaluj pakiet pymysql: </b>  
 <p><i>pip install pymysql</i></p>
+
+<hr>
+<b>Aby były zachowane standardy pep8 wpisz:</b>
+<p><i>python -m autopep8 --in-place --recursive  --aggressive --aggressive ./kanban/</i><p>
   
