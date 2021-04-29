@@ -41,6 +41,7 @@ class RowsListView(ListView):
 class RowsDetailView(DetailView):
     model = Rows
     template_name = 'kanban/kanban_detail.html'
+<<<<<<< HEAD
 
 # class CellsListView(ListView):
 #     model = Cells
@@ -85,3 +86,5 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+=======
+>>>>>>> origin/JerzyDeb

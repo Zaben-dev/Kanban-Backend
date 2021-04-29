@@ -5,5 +5,8 @@ router = routers.DefaultRouter()
 router.register('Tasks', TasksViewSet)
 router.register('Columns', ColumnsViewSet)
 router.register('Rows', RowsViewSet)
+<<<<<<< HEAD
 router.register('Users',UsersViewSet)
 # router.register('Cells', CellsViewSet)
+=======
+>>>>>>> origin/JerzyDeb

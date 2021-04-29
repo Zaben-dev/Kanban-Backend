@@ -1,26 +1,36 @@
 from django.db import models
 from django.db import transaction
+<<<<<<< HEAD
 from django.contrib.auth.models import User
+=======
+from django.core.exceptions import ValidationError
+
+>>>>>>> origin/JerzyDeb
+
+def checkColumnLimit(col, row, id):
+    if col is not None:
+        c = Columns.objects.get(id=col)
+        if Tasks.objects.filter(
+                id=id,
+                column_id=col,
+                row_id=row).exists() == False:
+            if c.limit is not None and Tasks.objects.filter(
+                    column_id=col, row_id=row).count() >= c.limit:
+                raise ValidationError(
+                    "Can only create %s tasks in column '%s'." %
+                    (c.limit, c.name))
+
 
 def checkPositions(col):
-    print('-----col = %s-----'%col)
 
-    countCols = Columns.objects.filter().count() #Number of columns
-    countRows = Rows.objects.filter().count() #Number of rows
-    colList = [] #array of columns
-    rowList = [] #array of rows
+    print('-----col = %s-----' % col)
 
-    if col > countCols-1:#If col is < than number of columns - End of function
-        return 0
+    countCols = Columns.objects.filter().count()  # Number of columns
+    countRows = Rows.objects.filter().count()  # Number of rows
+    colList = []  # array of columns
+    rowList = []  # array of rows
 
-    for i in range(countCols): #Filling the columns array
-        colList.append(Columns.objects.filter()[i:i+1].first()) 
-
-    for i in range(countRows): #Filling the rows array
-        rowList.append(Rows.objects.filter()[i:i+1].first()) 
-
-    print('-----For column: %s-----'%colList[col])
-
+<<<<<<< HEAD
     for i in range(countRows):
         print('i=%s'%(i))
         count = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).count()#Number of tasks in current column and row
@@ -32,42 +42,90 @@ def checkPositions(col):
         print('Number of tasks in col %s and row %s = %s'%(colList[col],rowList[i],count))
     
         min = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
+=======
+    if col > countCols - 1:  # If col is < than number of columns - End of function
+        return 0
 
-        print('Min position in col %s and row %s = %s'%(colList[col],rowList[i],min))
+    for i in range(countCols):  # Filling the columns array
+        colList.append(Columns.objects.filter()[i:i + 1].first())
 
-        if min is None: #If min is none - Column is empty - Change to the next column (col=col+1)
+    for i in range(countRows):  # Filling the rows array
+        rowList.append(Rows.objects.filter()[i:i + 1].first())
+>>>>>>> origin/JerzyDeb
+
+    print('-----For column: %s-----' % colList[col])
+
+    for i in range(countRows):
+        print('i=%s' % (i))
+        # Number of tasks in current column and row
+        count = Tasks.objects.filter(
+            column=colList[col], row=rowList[i]).count()
+        tasList = []  # array of tasks
+
+        for j in range(count):
+            tasList.append(
+                Tasks.objects.filter(
+                    column=colList[col],
+                    row=rowList[i])[
+                    j:j +
+                    1].first())  # Filling the tasks array
+
+        print(
+            'Number of tasks in col %s and row %s = %s' %
+            (colList[col], rowList[i], count))
+
+        min = Tasks.objects.filter(column=colList[col], row=rowList[i]).aggregate(
+            smallest=models.Min('position'))['smallest']  # Find a minimum position in column
+
+        print(
+            'Min position in col %s and row %s = %s' %
+            (colList[col], rowList[i], min))
+
+        # If min is none - Column is empty - Change to the next column
+        # (col=col+1)
+        if min is None:
             print('Komórka pusta - Zmieniono komórke')
-            checkPositions(col+1)
-            
+            checkPositions(col + 1)
 
-        if len(tasList) == 1: #If number of tasks on column is one - Change to the next column (col=col+1)
+        if len(tasList) == 1:  # If number of tasks on column is one - Change to the next column (col=col+1)
             print('One task in col - column has been changed')
-            checkPositions(col+1)
-    
-        if min != 1 and min is not None: #If min exists and min is not 1 - Change minimum to one
+            checkPositions(col + 1)
+
+        if min != 1 and min is not None:  # If min exists and min is not 1 - Change minimum to one
             with transaction.atomic():
+<<<<<<< HEAD
                 for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id, position=min):
+=======
+                for task in Tasks.objects.filter(
+                        column=colList[col], row=rowList[i], position=min):
+>>>>>>> origin/JerzyDeb
                     min = 1
                     task.position = min
                     print('Minimum value wasn`t `1` - Minimum was changed to `1`')
                     task.save(col=1)
 
-        if min == 1: #If min is 1 - Column is not empty - Check positions
-            for l in range (len(tasList)-1):
-                if(tasList[l+1].position-tasList[l].position != 1):
+        if min == 1:  # If min is 1 - Column is not empty - Check positions
+            for l in range(len(tasList) - 1):
+                if(tasList[l + 1].position - tasList[l].position != 1):
                     with transaction.atomic():
+<<<<<<< HEAD
                         for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id,position=tasList[l+1].position):
                             task.position = 1+tasList[l].position
+=======
+                        for task in Tasks.objects.filter(
+                                col=colList[col], row=rowList[i], position=tasList[l + 1].position):
+                            task.position = 1 + tasList[l].position
+>>>>>>> origin/JerzyDeb
                             task.save(col=1)
-                            print('Changed position of task (id:%s) from |%s| to |%s|'%(tasList[l+1].id,tasList[l+1].position,1+tasList[l].position))
-                            tasList[l+1].position = 1+tasList[l].position 
+                            print('Changed position of task (id:%s) from |%s| to |%s|' % (
+                                tasList[l + 1].id, tasList[l + 1].position, 1 + tasList[l].position))
+                            tasList[l + 1].position = 1 + tasList[l].position
             print('Column has been changed')
-            checkPositions(col+1)
-        
+            checkPositions(col + 1)
 
 
 class Columns(models.Model):
-    id = models.AutoField(primary_key=True,editable=False)
+    id = models.AutoField(primary_key=True, editable=False)
     name = models.CharField(max_length=40)
     limit = models.IntegerField(null=True)
 
@@ -76,19 +134,6 @@ class Columns(models.Model):
 
     class Meta:
         ordering = ['id']
-
-    # def save(self,**kwargs):
-
-    #     countRows = Rows.objects.filter().count() #Number of columns
-    #     rowList = [] #array of columns
-
-    #     for i in range(countRows): #Filling the columns array
-    #         rowList.append(Rows.objects.filter()[i:i+1].first()) 
-
-    #     super().save(**kwargs)
-    #     for i in rowList:
-    #         c = Cells(None,self.id,i.id)
-    #         c.save() 
 
 
 class Rows(models.Model):
@@ -100,34 +145,6 @@ class Rows(models.Model):
 
     class Meta:
         ordering = ['id']
-
-    # def save(self,**kwargs):
-
-    #     countCols = Columns.objects.filter().count() #Number of columns
-    #     colList = [] #array of columns
-
-    #     for i in range(countCols): #Filling the columns array
-    #         colList.append(Columns.objects.filter()[i:i+1].first()) 
-
-    #     super().save(**kwargs)
-    #     for i in colList:
-    #         c = Cells(None,i.id,self.id)
-    #         c.save() 
-
-
-
-
-
-# class Cells(models.Model):
-#     id = models.AutoField(primary_key=True,editable=False)
-#     column = models.ForeignKey(Columns, related_name="column", on_delete=models.PROTECT, editable=False)
-#     row = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=False)
-
-#     #def __str__(self):
-#     #    return self.id
-
-#     class Meta:
-#         ordering = ['id']
 
 
 class Tasks(models.Model):
@@ -141,6 +158,7 @@ class Tasks(models.Model):
     title = models.CharField(max_length=70)
     description = models.TextField(max_length=400, blank=True)
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
+<<<<<<< HEAD
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
@@ -151,26 +169,68 @@ class Tasks(models.Model):
     rowId = models.ForeignKey(Rows, related_name="rowId",null=True, on_delete=models.PROTECT, editable=False)
 
     User = models.ManyToManyField('auth.User', related_name='danie', editable=True)
+=======
+    selectDifficulty = ((Easy, 'Easy'), (Intermediate,
+                        'Intermediate'), (Hard, 'Hard'),)
+    priority = models.CharField(
+        max_length=6,
+        choices=selectPriority,
+        default=Low)
+    difficulty = models.CharField(
+        max_length=12,
+        choices=selectDifficulty,
+        default=Easy)
+    publishDate = models.DateTimeField(
+        'date time published', auto_now_add=True)
+    column = models.ForeignKey(
+        Columns,
+        related_name="column",
+        null=True,
+        on_delete=models.PROTECT,
+        editable=False)
+    position = models.IntegerField(
+        'Position',
+        default=1,
+        unique=False,
+        editable=True)
+    row = models.ForeignKey(
+        Rows,
+        related_name="row",
+        null=True,
+        on_delete=models.PROTECT,
+        editable=False)
+>>>>>>> origin/JerzyDeb
 
     def delete(self):
         super(Tasks, self).delete()
         checkPositions(0)
 
     def save(self, col=-1, **kwargs):
-        #import TasksSerializer
-        #col = 1 - Only save task
+        checkColumnLimit(self.column.id, self.row.id, self.id)
+        # col = 1 - Only save task
         #col = -1 - checkPositions(0)
         countCols = Columns.objects.filter().count()
         zmiana = True
         while zmiana:
+<<<<<<< HEAD
             if Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position).exists():
                 with transaction.atomic():
                     for task in Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position):
                         task.position = task.position+1
+=======
+            if Tasks.objects.filter(
+                    column=self.column,
+                    row=self.row,
+                    position=self.position).exists():
+                with transaction.atomic():
+                    for task in Tasks.objects.filter(
+                            column=self.column, row=self.row, position=self.position):
+                        task.position = task.position + 1
+>>>>>>> origin/JerzyDeb
                         task.save(col=1)
-                        zmiana=True
+                        zmiana = True
             else:
-                zmiana= False
+                zmiana = False
                 super().save(**kwargs)
 
         if col == 1:
@@ -183,6 +243,10 @@ class Tasks(models.Model):
         return self.title
 
     class Meta:
+<<<<<<< HEAD
         ordering = ['position']
 
 
+=======
+        ordering = ['column', 'row', 'position']
+>>>>>>> origin/JerzyDeb
