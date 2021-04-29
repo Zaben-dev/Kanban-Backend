@@ -29,11 +29,12 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
     # cell_id = serializers.IntegerField(required=False)
     # cellId = cell_id
 
-    column_id = serializers.IntegerField(required=False)
-    columnId = column_id
+    # column_id = serializers.IntegerField(required=False)
+    # columnId = column_id
+    columnId = serializers.PrimaryKeyRelatedField(many=False, queryset=Columns.objects.all())
 
-    row_id = serializers.IntegerField(required=False)
-    rowId = row_id
+    #row_id = serializers.IntegerField(required=False)
+    rowId = serializers.PrimaryKeyRelatedField(many=False, queryset=Rows.objects.all())
 
     # User = get_user_model()
     # choices = User.objects.all()
@@ -42,22 +43,22 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
     # userId = user_id
 
     #ids = serializers.HyperlinkedRelatedField(many=True, queryset=User.objects.all(),view_name='User-list')
-    user = serializers.ReadOnlyField(source='User.username')
-
+    #user = serializers.ReadOnlyField(source='User.username')
+    User = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
     class Meta:
         model = Tasks
-        fields = ('id', 'User','user', 'title', 'description', 'priority', 'difficulty',
-                  'publishDate', 'position','column', 'column_id', 'columnId','row','row_id','rowId')
+        fields = ('id', 'User', 'title', 'description', 'priority', 'difficulty',
+                  'publishDate', 'position','columnId','rowId')
 
-        def get_column_id(self, obj):
-            obj.column_id = Columns.objects.get(id=self.model.column.id)
-            col_id = obj.column_id.id
-            return col_id
+        # def get_column_id(self, obj):
+        #     obj.column_id = Columns.objects.get(id=self.model.column.id)
+        #     col_id = obj.column_id.id
+        #     return col_id
 
-        def get_row_id(self, obj):
-            obj.row_id = Rows.objects.get(id=self.model.row.id)
-            row_id = obj.row_id.id
-            return row_id
+        # def get_row_id(self, obj):
+        #     obj.row_id = Rows.objects.get(id=self.model.row.id)
+        #     row_id = obj.row_id.id
+        #     return row_id
 
         # def get_user_id(self, obj):
         #     obj.user_id = User.objects.get(id=self.model.User.id)

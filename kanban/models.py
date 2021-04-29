@@ -23,15 +23,15 @@ def checkPositions(col):
 
     for i in range(countRows):
         print('i=%s'%(i))
-        count = Tasks.objects.filter(column=colList[col],row=rowList[i]).count()#Number of tasks in current column and row
+        count = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).count()#Number of tasks in current column and row
         tasList = [] #array of tasks
 
         for j in range(count): 
-            tasList.append(Tasks.objects.filter(column=colList[col],row=rowList[i])[j:j+1].first()) #Filling the tasks array
+            tasList.append(Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id)[j:j+1].first()) #Filling the tasks array
 
         print('Number of tasks in col %s and row %s = %s'%(colList[col],rowList[i],count))
     
-        min = Tasks.objects.filter(column=colList[col],row=rowList[i]).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
+        min = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
 
         print('Min position in col %s and row %s = %s'%(colList[col],rowList[i],min))
 
@@ -46,7 +46,7 @@ def checkPositions(col):
     
         if min != 1 and min is not None: #If min exists and min is not 1 - Change minimum to one
             with transaction.atomic():
-                for task in Tasks.objects.filter(column=colList[col],row=rowList[i], position=min):
+                for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id, position=min):
                     min = 1
                     task.position = min
                     print('Minimum value wasn`t `1` - Minimum was changed to `1`')
@@ -56,7 +56,7 @@ def checkPositions(col):
             for l in range (len(tasList)-1):
                 if(tasList[l+1].position-tasList[l].position != 1):
                     with transaction.atomic():
-                        for task in Tasks.objects.filter(col=colList[col],row=rowList[i],position=tasList[l+1].position):
+                        for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id,position=tasList[l+1].position):
                             task.position = 1+tasList[l].position
                             task.save(col=1)
                             print('Changed position of task (id:%s) from |%s| to |%s|'%(tasList[l+1].id,tasList[l+1].position,1+tasList[l].position))
@@ -145,10 +145,10 @@ class Tasks(models.Model):
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
     publishDate = models.DateTimeField('date time published', auto_now_add=True)
-    column = models.ForeignKey(Columns, related_name="column",null=True, on_delete=models.PROTECT, editable=False)
+    columnId = models.ForeignKey(Columns, related_name="columnId",null=True, on_delete=models.PROTECT, editable=False)
     #cell = models.ForeignKey(Cells, related_name="cell", null=True,on_delete=models.PROTECT, editable=False)
     position = models.IntegerField('Position', default=1, unique=False, editable=True)
-    row = models.ForeignKey(Rows, related_name="row",null=True, on_delete=models.PROTECT, editable=False)
+    rowId = models.ForeignKey(Rows, related_name="rowId",null=True, on_delete=models.PROTECT, editable=False)
 
     User = models.ManyToManyField('auth.User', related_name='danie', editable=True)
 
@@ -163,9 +163,9 @@ class Tasks(models.Model):
         countCols = Columns.objects.filter().count()
         zmiana = True
         while zmiana:
-            if Tasks.objects.filter(column=self.column,row=self.row,position=self.position).exists():
+            if Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position).exists():
                 with transaction.atomic():
-                    for task in Tasks.objects.filter(column=self.column,row=self.row,position=self.position):
+                    for task in Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position):
                         task.position = task.position+1
                         task.save(col=1)
                         zmiana=True
@@ -183,6 +183,6 @@ class Tasks(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['row','position']
+        ordering = ['position']
 
 
