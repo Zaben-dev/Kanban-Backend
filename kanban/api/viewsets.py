@@ -28,9 +28,3 @@ class RowsViewSet(viewsets.ModelViewSet):
     queryset = Rows.objects.all()
     serializer_class = RowsSerializer
 
-
-# class CellsViewSet(viewsets.ModelViewSet):
-#     queryset = Cells.objects.all()
-#     serializer_class = CellsSerializer
-
-
