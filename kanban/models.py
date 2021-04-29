@@ -1,11 +1,6 @@
 from django.db import models
 from django.db import transaction
-<<<<<<< HEAD
 from django.contrib.auth.models import User
-=======
-from django.core.exceptions import ValidationError
-
->>>>>>> origin/JerzyDeb
 
 def checkColumnLimit(col, row, id):
     if col is not None:
@@ -30,7 +25,6 @@ def checkPositions(col):
     colList = []  # array of columns
     rowList = []  # array of rows
 
-<<<<<<< HEAD
     for i in range(countRows):
         print('i=%s'%(i))
         count = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).count()#Number of tasks in current column and row
@@ -42,16 +36,6 @@ def checkPositions(col):
         print('Number of tasks in col %s and row %s = %s'%(colList[col],rowList[i],count))
     
         min = Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id).aggregate(smallest=models.Min('position'))['smallest'] #Find a minimum position in column
-=======
-    if col > countCols - 1:  # If col is < than number of columns - End of function
-        return 0
-
-    for i in range(countCols):  # Filling the columns array
-        colList.append(Columns.objects.filter()[i:i + 1].first())
-
-    for i in range(countRows):  # Filling the rows array
-        rowList.append(Rows.objects.filter()[i:i + 1].first())
->>>>>>> origin/JerzyDeb
 
     print('-----For column: %s-----' % colList[col])
 
@@ -93,12 +77,7 @@ def checkPositions(col):
 
         if min != 1 and min is not None:  # If min exists and min is not 1 - Change minimum to one
             with transaction.atomic():
-<<<<<<< HEAD
                 for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id, position=min):
-=======
-                for task in Tasks.objects.filter(
-                        column=colList[col], row=rowList[i], position=min):
->>>>>>> origin/JerzyDeb
                     min = 1
                     task.position = min
                     print('Minimum value wasn`t `1` - Minimum was changed to `1`')
@@ -108,14 +87,8 @@ def checkPositions(col):
             for l in range(len(tasList) - 1):
                 if(tasList[l + 1].position - tasList[l].position != 1):
                     with transaction.atomic():
-<<<<<<< HEAD
                         for task in Tasks.objects.filter(columnId=colList[col].id,rowId=rowList[i].id,position=tasList[l+1].position):
                             task.position = 1+tasList[l].position
-=======
-                        for task in Tasks.objects.filter(
-                                col=colList[col], row=rowList[i], position=tasList[l + 1].position):
-                            task.position = 1 + tasList[l].position
->>>>>>> origin/JerzyDeb
                             task.save(col=1)
                             print('Changed position of task (id:%s) from |%s| to |%s|' % (
                                 tasList[l + 1].id, tasList[l + 1].position, 1 + tasList[l].position))
@@ -158,7 +131,6 @@ class Tasks(models.Model):
     title = models.CharField(max_length=70)
     description = models.TextField(max_length=400, blank=True)
     selectPriority = ((Low, 'Low'), (Medium, 'Medium'), (High, 'High'),)
-<<<<<<< HEAD
     selectDifficulty = ((Easy, 'Easy'), (Intermediate, 'Intermediate'), (Hard, 'Hard'),)
     priority = models.CharField(max_length=6, choices=selectPriority, default=Low)
     difficulty = models.CharField(max_length=12, choices=selectDifficulty, default=Easy)
@@ -169,37 +141,6 @@ class Tasks(models.Model):
     rowId = models.ForeignKey(Rows, related_name="rowId",null=True, on_delete=models.PROTECT, editable=False)
 
     User = models.ManyToManyField('auth.User', related_name='danie', editable=True)
-=======
-    selectDifficulty = ((Easy, 'Easy'), (Intermediate,
-                        'Intermediate'), (Hard, 'Hard'),)
-    priority = models.CharField(
-        max_length=6,
-        choices=selectPriority,
-        default=Low)
-    difficulty = models.CharField(
-        max_length=12,
-        choices=selectDifficulty,
-        default=Easy)
-    publishDate = models.DateTimeField(
-        'date time published', auto_now_add=True)
-    column = models.ForeignKey(
-        Columns,
-        related_name="column",
-        null=True,
-        on_delete=models.PROTECT,
-        editable=False)
-    position = models.IntegerField(
-        'Position',
-        default=1,
-        unique=False,
-        editable=True)
-    row = models.ForeignKey(
-        Rows,
-        related_name="row",
-        null=True,
-        on_delete=models.PROTECT,
-        editable=False)
->>>>>>> origin/JerzyDeb
 
     def delete(self):
         super(Tasks, self).delete()
@@ -212,21 +153,10 @@ class Tasks(models.Model):
         countCols = Columns.objects.filter().count()
         zmiana = True
         while zmiana:
-<<<<<<< HEAD
             if Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position).exists():
                 with transaction.atomic():
                     for task in Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position):
                         task.position = task.position+1
-=======
-            if Tasks.objects.filter(
-                    column=self.column,
-                    row=self.row,
-                    position=self.position).exists():
-                with transaction.atomic():
-                    for task in Tasks.objects.filter(
-                            column=self.column, row=self.row, position=self.position):
-                        task.position = task.position + 1
->>>>>>> origin/JerzyDeb
                         task.save(col=1)
                         zmiana = True
             else:
@@ -243,10 +173,6 @@ class Tasks(models.Model):
         return self.title
 
     class Meta:
-<<<<<<< HEAD
         ordering = ['position']
 
 
-=======
-        ordering = ['column', 'row', 'position']
->>>>>>> origin/JerzyDeb

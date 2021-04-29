@@ -19,7 +19,6 @@ class ColumnsSerializer(serializers.HyperlinkedModelSerializer):
 
 class TasksSerializer(serializers.HyperlinkedModelSerializer):
 
-<<<<<<< HEAD
     def validate_column_limit(value):
         if value is not None:
             c = Columns.objects.get(id=value)
@@ -39,10 +38,6 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
 
     # User = get_user_model()
     # choices = User.objects.all()
-=======
-    column_id = serializers.IntegerField(required=False)
-    columnId = column_id
->>>>>>> origin/JerzyDeb
 
     # user_id = serializers.IntegerField(choices = choices)
     # userId = user_id
@@ -76,7 +71,6 @@ class RowsSerializer(serializers.HyperlinkedModelSerializer):
         model = Rows
         fields = ('id', 'name')
 
-<<<<<<< HEAD
 # class CellsSerializer(serializers.HyperlinkedModelSerializer):
 
 #     column_id = serializers.IntegerField(required=False)
@@ -123,5 +117,3 @@ class LoginSerializer(serializers.Serializer):
       if user and user.is_active:
          return user
       raise serializers.ValidationError("Incorrect Credentials")
-=======
->>>>>>> origin/JerzyDeb
