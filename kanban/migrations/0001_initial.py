@@ -26,11 +26,15 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('title', models.CharField(max_length=100)),
                 ('description', models.TextField()),
-                ('priority', models.CharField(choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')], default='Low', max_length=6)),
-                ('difficulty', models.CharField(choices=[('Easy', 'Easy'), ('Intermediate', 'Intermediate'), ('Hard', 'Hard')], default='Easy', max_length=12)),
-                ('publishDate', models.DateTimeField(auto_now_add=True, verbose_name='date time published')),
+                ('priority', models.CharField(choices=[
+                 ('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')], default='Low', max_length=6)),
+                ('difficulty', models.CharField(choices=[
+                 ('Easy', 'Easy'), ('Intermediate', 'Intermediate'), ('Hard', 'Hard')], default='Easy', max_length=12)),
+                ('publishDate', models.DateTimeField(
+                    auto_now_add=True, verbose_name='date time published')),
                 ('position', models.IntegerField(default=1, verbose_name='Code')),
-                ('column', models.ForeignKey(editable=False, on_delete=django.db.models.deletion.PROTECT, related_name='column', to='kanban.Columns')),
+                ('column', models.ForeignKey(editable=False, on_delete=django.db.models.deletion.PROTECT,
+                 related_name='column', to='kanban.Columns')),
             ],
             options={
                 'ordering': ['position'],

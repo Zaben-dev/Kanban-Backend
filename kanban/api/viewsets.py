@@ -21,14 +21,16 @@ class TasksViewSet(viewsets.ModelViewSet):
     queryset = Tasks.objects.all()
     serializer_class = TasksSerializer
     filterset_class = TasksFilter
-    authentication_classes = [TokenAuthentication,SessionAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated]
+
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated]
+
 
 class ColumnsViewSet(viewsets.ModelViewSet):
     queryset = Columns.objects.all()
@@ -40,4 +42,3 @@ class ColumnsViewSet(viewsets.ModelViewSet):
 class RowsViewSet(viewsets.ModelViewSet):
     queryset = Rows.objects.all()
     serializer_class = RowsSerializer
-

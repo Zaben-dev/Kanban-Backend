@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cells',
             name='id',
-            field=models.AutoField(editable=False, primary_key=True, serialize=False),
+            field=models.AutoField(
+                editable=False, primary_key=True, serialize=False),
         ),
     ]

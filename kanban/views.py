@@ -13,6 +13,7 @@ from knox.auth import TokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 
+
 class TasksListView(ListView):
     model = Tasks
     template_name = 'kanban/kanban_list.html'
@@ -42,26 +43,18 @@ class RowsDetailView(DetailView):
     model = Rows
     template_name = 'kanban/kanban_detail.html'
 
-# class CellsListView(ListView):
-#     model = Cells
-#     template_name = 'kanban/kanban_list.html'
-
-
-# class CellsDetailView(DetailView):
-#     model = Cells
-#     template_name = 'kanban/kanban_detail.html'
-
-# Register API
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-list'
 
+
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     name = 'user-detail'
+
 
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -70,10 +63,10 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        return Response({
-        "user": UserSerializer(user, context=self.get_serializer_context()).data,
-        "token": AuthToken.objects.create(user)[1]
-        })
+        return Response({"user": UserSerializer(user,
+                                                context=self.get_serializer_context()).data,
+                         "token": AuthToken.objects.create(user)[1]})
+
 
 class LoginAPI(KnoxLoginView):
     serializer_class = LoginSerializer

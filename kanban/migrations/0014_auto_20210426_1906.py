@@ -26,12 +26,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tasks',
             name='column',
-            field=models.ForeignKey(editable=False, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='column', to='kanban.Columns'),
+            field=models.ForeignKey(
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='column',
+                to='kanban.Columns'),
         ),
         migrations.AddField(
             model_name='tasks',
             name='row',
-            field=models.ForeignKey(editable=False, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='row', to='kanban.Rows'),
+            field=models.ForeignKey(
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='row',
+                to='kanban.Rows'),
         ),
         migrations.DeleteModel(
             name='Cells',

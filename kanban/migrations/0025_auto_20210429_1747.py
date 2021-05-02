@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='tasks',
-            options={'ordering': ['position']},
+            options={
+                'ordering': ['position']},
         ),
         migrations.RemoveField(
             model_name='tasks',
@@ -22,6 +23,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tasks',
             name='rowId',
-            field=models.ForeignKey(editable=False, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='rowId', to='kanban.rows'),
+            field=models.ForeignKey(
+                editable=False,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='rowId',
+                to='kanban.rows'),
         ),
     ]

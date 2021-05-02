@@ -14,6 +14,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tasks',
             name='rows',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='row', to='kanban.rows'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='row',
+                to='kanban.rows'),
         ),
     ]
