@@ -52,11 +52,13 @@ def checkPositions(col):
 
         if min is None: #If min is none - Column is empty - Change to the next column (col=col+1)
             print('Komórka pusta - Zmieniono komórke')
-            checkPositions(col+1)
+            continue
+            #checkPositions(col+1)
             
         if len(tasList) == 1: #If number of tasks on column is one - Change to the next column (col=col+1)
             print('One task in col - column has been changed')
-            checkPositions(col+1)
+            continue
+            #checkPositions(col+1)
    
         if min != 1 and min is not None: #If min exists and min is not 1 - Change minimum to one
             with transaction.atomic():
@@ -64,19 +66,27 @@ def checkPositions(col):
                     min = 1
                     task.position = min
                     print('Minimum value wasn`t `1` - Minimum was changed to `1`')
+                    tasList[0]=task
                     task.save(col=1)
+        
+        if tasList[len(tasList)-1].position>count:
+            temp = tasList[len(tasList)-2]
+            tasList[len(tasList)-2]= tasList[len(tasList)-1]
+            tasList[len(tasList)-1]=temp
 
-        if min == 1: #If min is 1 - Column is not empty - Check positions
-            for l in range (len(tasList)-1):
-                if(tasList[l+1].position-tasList[l].position != 1):
-                    with transaction.atomic():
-                        for task in Tasks.objects.filter(columnId=colList[col],rowId=rowList[i],position=tasList[l+1].position):
-                            task.position = 1+tasList[l].position
-                            task.save(col=1)
-                            print('Changed position of task (id:%s) from |%s| to |%s|'%(tasList[l+1].id,tasList[l+1].position,1+tasList[l].position))
-                            tasList[l+1].position = 1+tasList[l].position 
-            print('Column has been changed')
-            checkPositions(col+1)
+        for x in range (len(tasList)):
+            print("ID: %s || POS: %s"%(tasList[x].id,tasList[x].position))    
+        #If min is 1 - Column is not empty - Check positions
+        for l in range (len(tasList)-1):
+            if(tasList[l+1].position-tasList[l].position != 1):
+                with transaction.atomic():
+                    for task in Tasks.objects.filter(columnId=colList[col],rowId=rowList[i],position=tasList[l+1].position):
+                        task.position = 1+tasList[l].position
+                        task.save(col=1)
+                        print('Changed position of task (id:%s) from |%s| to |%s|'%(tasList[l+1].id,tasList[l+1].position,1+tasList[l].position))
+                        tasList[l+1].position = 1+tasList[l].position 
+    print('Column has been changed')
+    checkPositions(col+1)
 
 
 class Columns(models.Model):
@@ -155,7 +165,9 @@ class Tasks(models.Model):
     def save(self, col=-1, **kwargs):
         # col = 1 - Only save task
         #col = -1 - checkPositions(0)
-        countCols = Columns.objects.filter().count()
+
+        #countCols = Columns.objects.filter().count()
+        #count = Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId).count()
         zmiana = True
         while zmiana:
             if Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position).exists():
