@@ -3,7 +3,6 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-
 def checkColumnLimit(col, row, id):
     if col is not None:
         c = Columns.objects.get(id=col)
@@ -41,6 +40,7 @@ def checkPositions(col):
         count = Tasks.objects.filter(columnId=colList[col],rowId=rowList[i]).count()#Number of tasks in current column and row
         tasList = [] #array of tasks
 
+
         for j in range(count): 
             tasList.append(Tasks.objects.filter(columnId=colList[col],rowId=rowList[i])[j:j+1].first()) #Filling the tasks array
 
@@ -53,12 +53,6 @@ def checkPositions(col):
         if min is None: #If min is none - Column is empty - Change to the next column (col=col+1)
             print('Komórka pusta - Zmieniono komórke')
             continue
-            #checkPositions(col+1)
-            
-        if len(tasList) == 1: #If number of tasks on column is one - Change to the next column (col=col+1)
-            print('One task in col - column has been changed')
-            continue
-            #checkPositions(col+1)
    
         if min != 1 and min is not None: #If min exists and min is not 1 - Change minimum to one
             with transaction.atomic():
@@ -68,14 +62,20 @@ def checkPositions(col):
                     print('Minimum value wasn`t `1` - Minimum was changed to `1`')
                     tasList[0]=task
                     task.save(col=1)
-        
-        if tasList[len(tasList)-1].position>count:
-            temp = tasList[len(tasList)-2]
-            tasList[len(tasList)-2]= tasList[len(tasList)-1]
-            tasList[len(tasList)-1]=temp
 
-        for x in range (len(tasList)):
-            print("ID: %s || POS: %s"%(tasList[x].id,tasList[x].position))    
+        if len(tasList) == 2:
+            tasList.sort(key=lambda x: x.position)
+
+        else:
+            if tasList[len(tasList)-1].position>count:
+                temp = tasList[len(tasList)-2]
+                tasList[len(tasList)-2]= tasList[len(tasList)-1]
+                tasList[len(tasList)-1]=temp
+
+            if len(tasList) == 1: #If number of tasks on column is one - Change to the next column (col=col+1)
+                print('One task in col - column has been changed')
+                continue
+    
         #If min is 1 - Column is not empty - Check positions
         for l in range (len(tasList)-1):
             if(tasList[l+1].position-tasList[l].position != 1):
@@ -163,11 +163,10 @@ class Tasks(models.Model):
         checkPositions(0)
 
     def save(self, col=-1, **kwargs):
+        checkColumnLimit(self.columnId.id, self.rowId.id, self.id)
         # col = 1 - Only save task
         #col = -1 - checkPositions(0)
 
-        #countCols = Columns.objects.filter().count()
-        #count = Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId).count()
         zmiana = True
         while zmiana:
             if Tasks.objects.filter(columnId=self.columnId,rowId=self.rowId,position=self.position).exists():
@@ -181,7 +180,6 @@ class Tasks(models.Model):
                 super().save(**kwargs)
 
         if col == 1:
-            #checkColumnLimit(self.columnId.id, self.rowId.id, self.id)
             super().save(**kwargs)
 
         if col == -1:
