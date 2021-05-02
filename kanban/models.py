@@ -153,10 +153,10 @@ class Tasks(models.Model):
         on_delete=models.PROTECT,
         editable=False)
 
-    User = models.ManyToManyField(
-        'auth.User',
-        related_name='danie',
-        editable=True)
+    # User = models.ManyToManyField(
+    #     'auth.User',
+    #     related_name='danie',
+    #     editable=True)
 
     def delete(self):
         super(Tasks, self).delete()
