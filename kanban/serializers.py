@@ -35,14 +35,14 @@ class TasksSerializer(serializers.HyperlinkedModelSerializer):
         many=False, queryset=Columns.objects.all(),required=False)
     rowId = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Rows.objects.all(),required=False)
-    #User = serializers.PrimaryKeyRelatedField(
-    #    many=True, queryset=User.objects.all())
+    User = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=User.objects.all())
 
     class Meta:
         model = Tasks
         fields = (
             'id',
-            #'User',
+            'User',
             'title',
             'description',
             'priority',
